@@ -18,7 +18,7 @@ class PriceCalculator:
         self.web3 = web3
         self.chain = chain
 
-    def getLpInfo(self, lp_address: str) -> float:
+    def getLpInfo(self, lp_address: str) -> LpInfo:
         contract = self.web3.eth.contract(address=lp_address, abi=self._getContractAbi(lp_address))
 
         # Token0 contract
@@ -55,6 +55,9 @@ class PriceCalculator:
         # TODO: Same thing happens with _getTokenSymbol than explained before
         lp_info = LpInfo(lp_address, Token(token0_address, self._getTokenSymbol(token0_address)), Token(token1_address, self._getTokenSymbol(token1_address)))
         lp_info.set_price(lp_price)
+        lp_info.setAmountToken0(total_supply_token_0)
+        lp_info.setAmountToken1(total_supply_token_1)
+
         return lp_info
 
 

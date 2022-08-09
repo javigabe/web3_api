@@ -42,7 +42,11 @@ for i in range(0, poolLength):
     if ((amount := spooky.userInfo(i, '0x3C6696a2347329517EC65b971e1dc5EF1bf2556e')[0]) != 0):
         lpToken = spooky.lpToken(i)
         lpTokens = Web3.fromWei(amount, 'ether')
-        print(float(lpTokens)*price_calculator.getLpInfo(lpToken).get_price())
+        lpInfo = price_calculator.getLpInfo(lpToken)
+        print("TIENES UN LP FORMADO DE:")
+        print("Token 1: " + lpInfo.get_token0().getName())
+        print("Token 2: " + lpInfo.get_token1().getName())
+        print("Por un valor de: ", float(lpTokens)*lpInfo.get_price())
 
 
 print("--- %s seconds ---" % (time.time() - start_time))
