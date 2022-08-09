@@ -17,7 +17,7 @@ length = pancake.poolLength()
 web3 = Web3(Web3.HTTPProvider('https://bsc-dataseed.binance.org/'))
 price_calculator = PriceCalculator(web3, 'binance')
 
-for i in range(0, length):
+"""for i in range(0, length):
     if ((amount := pancake.userInfo(i, '0x13Be1cb3648874A2d741119810f7e24884197a2F')[0]) != 0):
         lptoken = pancake.lpToken(i)
         lpTokens = Web3.fromWei(amount, 'ether')
@@ -28,7 +28,7 @@ for i in range(0, length):
             print("Ha habido un error calculando el precio del LP")
 
 print("--- %s seconds ---" % (time.time() - start_time))
-
+"""
 
 start_time = time.time()
 
@@ -44,9 +44,9 @@ for i in range(0, poolLength):
         lpTokens = Web3.fromWei(amount, 'ether')
         lpInfo = price_calculator.getLpInfo(lpToken)
         print("TIENES UN LP FORMADO DE:")
-        print("Token 1: " + lpInfo.get_token0().getName())
-        print("Token 2: " + lpInfo.get_token1().getName())
-        print("Por un valor de: ", float(lpTokens)*lpInfo.get_price())
+        print("Token 1: " + lpInfo.getToken0().getName() + "\tAMOUNT: " + lpInfo.getAmountToken0())
+        print("Token 2: " + lpInfo.getToken1().getName())
+        print("Por un valor de: ", float(lpTokens)*lpInfo.getPrice())
 
 
 print("--- %s seconds ---" % (time.time() - start_time))

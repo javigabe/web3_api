@@ -61,7 +61,7 @@ class PriceCalculator:
         return lp_info
 
 
-    def _getTokenPrice(self, token_address: str) -> float:
+    def getTokenPrice(self, token_address: str) -> float:
         price_request = 'https://deep-index.moralis.io/api/v2/erc20/' + token_address + '/price?chain=' + self.chain
         headers = {
             'x-api-key': MORALIS_API_KEY
