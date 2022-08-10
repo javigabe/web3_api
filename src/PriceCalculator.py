@@ -23,7 +23,7 @@ class PriceCalculator:
 
         # Token0 contract
         token_0 = contract.functions.token0().call()
-        # Token 1 contract
+        # Token1 contract
         token_1 = contract.functions.token1().call()      
 
         # We obtain the supply of token0 and token1 in the lp
@@ -44,8 +44,8 @@ class PriceCalculator:
         token1_decimals = self._getTokenDecimals(token1_address)
        
         # We obtain the price of both tokens in USD
-        token0_priceUSD = self._getTokenPrice(token0_address)
-        token1_priceUSD = self._getTokenPrice(token1_address)
+        token0_priceUSD = self.getTokenPrice(token0_address)
+        token1_priceUSD = self.getTokenPrice(token1_address)
 
         total_supply_token_0 = reserves[0] / math.pow(10, token0_decimals)
         total_supply_token_1 = reserves[1] / math.pow(10, token1_decimals)
@@ -53,10 +53,8 @@ class PriceCalculator:
         lp_price = (token0_priceUSD * float(total_supply_token_0) + token1_priceUSD * float(total_supply_token_1))/float(total_supply)
         
         # TODO: Same thing happens with _getTokenSymbol than explained before
-        lp_info = LpInfo(lp_address, Token(token0_address, self._getTokenSymbol(token0_address)), Token(token1_address, self._getTokenSymbol(token1_address)))
-        lp_info.set_price(lp_price)
-        lp_info.setAmountToken0(total_supply_token_0)
-        lp_info.setAmountToken1(total_supply_token_1)
+        lp_info = LpInfo(lp_address, Token(token0_address, self._getTokenSymbol(token0_address), token0_priceUSD), Token(token1_address, self._getTokenSymbol(token1_address), token1_priceUSD))
+        lp_info.setPrice(lp_price)
 
         return lp_info
 
@@ -71,13 +69,7 @@ class PriceCalculator:
         token_priceUSD = resp['usdPrice']
         return token_priceUSD
 
-    def _getContractAbi(self, address: str ) -> str:
-        if self.chain == 'fantom':
-            return getContractAbiFTM(address)
-        elif self.chain == 'binance':
-            return getContractAbiBSC(address)
-
-    def _getTokenDecimals(self, token_address) -> int or None:
+    def getTokenDecimals(self, token_address) -> int or None:
         token_abi = self._getContractAbi(token_address)
         try:
             token_decimals = self.web3.eth.contract(address=token_address, abi=token_abi).functions.decimals().call()
@@ -88,13 +80,19 @@ class PriceCalculator:
             ##return token_decimals
             return None
 
-    def _getProxyAbi(self, address: str, abi: str) -> str:
+    def _getContractAbi(self, address: str ) -> str:
         if self.chain == 'fantom':
-            return getProxyAbiFTM(self.web3, address, abi)
+            return getContractAbiFTM(address)
         elif self.chain == 'binance':
-            return getProxyAbiBSC(self.web3, address, abi)
+            return getContractAbiBSC(address)
 
     def _getTokenSymbol(self, token_address: str) -> str:
         token_abi = self._getContractAbi(token_address)
         token_symbol = self.web3.eth.contract(address=token_address, abi=token_abi).functions.symbol().call()
         return token_symbol
+    
+    def _getProxyAbi(self, address: str, abi: str) -> str:
+        if self.chain == 'fantom':
+            return getProxyAbiFTM(self.web3, address, abi)
+        elif self.chain == 'binance':
+            return getProxyAbiBSC(self.web3, address, abi)
