@@ -1,6 +1,7 @@
-import token
+from typing import Dict
 from web3 import Web3
 import os
+
 
 address = '0xFC00FACE00000000000000000000000000000000'
 
@@ -20,21 +21,42 @@ class FantomWallet:
         self.contract_instance = web3.eth.contract(address=address, abi=contract_abi)
     
     
-    def getTokenAddress(self) -> str:
+    def getUserLiquidity(self, address: str) -> Dict or None:
+        pool_length = self._poolLength()
+        tokens = 0
+        reward_debt = 0
+
+        for i in range(0, pool_length):
+            if ((amount := self._getStake(i, address)) != 0):
+                tokens += amount
+                reward_debt += self._pendingRewards(address, i)
+        
+        return {
+            'user_liquidity': [ 
+                {
+                    'is_lp': 'false', 
+                    'amount': tokens,
+                    'token_address': self._getTokenAddress(),
+                    'reward_debt': reward_debt
+                }
+            ]
+        }
+
+    def _getTokenAddress(self) -> str:
         # Returns FTM address. This is the staking and rewards token
         return '0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83'
 
     # ------------------  CONTRACT FUNCTIONS  --------------------- #
 
-    def getStake(self, pid: int, address: str) -> int:
+    def _getStake(self, pid: int, address: str) -> int:
         # Returns amount of fantom staked in validator
         return self.contract_instance.functions.getStake(address, pid).call()
 
-    def poolLength(self) -> int:
+    def _poolLength(self) -> int:
         # Returns number of nodes available to stake
         return self.contract_instance.functions.lastValidatorID().call()
     
-    def pendingRewards(self, address: str, pid: int) -> int:
+    def _pendingRewards(self, address: str, pid: int) -> int:
         # Pending rewards of a user in a node
         return self.contract_instance.functions.pendingRewards(address, pid).call()
 

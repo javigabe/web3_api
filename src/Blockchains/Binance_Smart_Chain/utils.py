@@ -1,6 +1,6 @@
 import requests
 from web3 import Web3
-import os.path
+import os
 
 # TODO: REMOVE API KEY FROM HERE
 BSC_SCAN_API_KEY = '7JWPENGUX1KEXPIK1RS2ZHHE8N7ZBE2BJY'

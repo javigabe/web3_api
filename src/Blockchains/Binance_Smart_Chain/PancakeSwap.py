@@ -1,3 +1,4 @@
+from typing import Dict
 from web3 import Web3
 import os
 
@@ -23,23 +24,49 @@ class PancakeSwapV1:
         
         self.contract_instance = web3.eth.contract(address=farm_v1, abi=contract_abi)
 
+    def getUserLiquidity(self, address: str) -> Dict:
+        user_liquidity = {'user_liquidity': []}
+        reward_token = self._rewardToken()
+        length = self._poolLength()
+
+
+        for i in range(0, length):
+            user_info = self._userInfo(i, address)
+            if ((user_info[0]) != 0):
+                lp_token = self._poolInfo(i)[0]
+                pool = {
+                    'is_lp': 'true',
+                    'amount': user_info[0],
+                    'reward_debt': user_info[1],
+                    'token_address': lp_token,
+                    'reward_token': reward_token
+                }
+                user_liquidity['user_liquidity'].append(pool)
+                
+        return user_liquidity
 
     # ------------------  CONTRACT FUNCTIONS  --------------------- #
-    def poolInfo(self, pid: int) -> list:
+    def _poolInfo(self, pid: int) -> list:
         # [lpToken address, allocPoint uint256, lastRewardBlock uint256, accSpiritPerShare uint256, depositFeeBP uint16]
         return self.contract_instance.functions.poolInfo(pid).call()
 
-    def userInfo(self, pid: int, address: str) -> list:
+    def _userInfo(self, pid: int, address: str) -> list:
         #  [amount (lpTokens) uint256, rewardDebt uint256]
         return self.contract_instance.functions.userInfo(pid, address).call()
 
-    def poolLength(self) -> int:
+    def _poolLength(self) -> int:
         # Number of pools under this contract
         return self.contract_instance.functions.poolLength().call()
 
-    def pendingRewards(self, pid: int, address: str) -> int:
+    def _pendingRewards(self, pid: int, address: str) -> int:
         # Pending cake rewards for a user in a pool
         return self.contract_instance.functions.pendingCake(pid, address).call()
+
+    def _rewardToken(self) -> str:
+        # Cake token address
+        # HARD CODED TO SAVE ONE REQUEST
+        return Web3.toChecksumAddress('0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82')
+
 
 
 class PancakeSwapV2:
@@ -57,19 +84,44 @@ class PancakeSwapV2:
         self.contract_instance = web3.eth.contract(address=farm_v2, abi=contract_abi)
 
 
+    def getUserLiquidity(self, address: str) -> Dict:
+        user_liquidity = {'user_liquidity': []}
+        reward_token = self._rewardToken()
+        length = self._poolLength()
+
+        for i in range(0, length):
+            user_info = self._userInfo(i, address)
+            if ((user_info[0]) != 0):
+                lp_token = self._lpToken(i)
+                pool = {
+                    'is_lp': 'true',
+                    'amount': user_info[0],
+                    'reward_debt': user_info[1],
+                    'token_address': lp_token,
+                    'reward_token': reward_token
+                }
+                user_liquidity['user_liquidity'].append(pool)
+                
+        return user_liquidity
+
     # ------------------  CONTRACT FUNCTIONS  --------------------- #
-    def userInfo(self, pid: int, address: str) -> list:
+    def _userInfo(self, pid: int, address: str) -> list:
         #  [amount (lpTokens) uint256, rewardDebt uint256]
         return self.contract_instance.functions.userInfo(pid, address).call()
 
-    def poolLength(self) -> int:
+    def _poolLength(self) -> int:
         # Number of pools under this contract
         return self.contract_instance.functions.poolLength().call()
 
-    def pendingRewards(self, pid: int, address: str) -> int:
+    def _pendingRewards(self, pid: int, address: str) -> int:
         # Pending cake rewards for a user in a pool
         return self.contract_instance.functions.pendingCake(pid, address).call()
 
-    def lpToken(self, pid: int) -> str:
+    def _lpToken(self, pid: int) -> str:
         # lp token address of a pool
         return self.contract_instance.functions.lpToken(pid).call()
+
+    def _rewardToken(self) -> str:
+        # Cake token address
+        # HARD CODED TO SAVE ONE REQUEST
+        return Web3.toChecksumAddress('0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82')

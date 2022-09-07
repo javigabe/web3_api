@@ -2,11 +2,9 @@ from web3 import Web3
 import requests
 import math
 
-from Blockchains.Fantom.utils import getContractAbiFTM, getProxyAbiFTM
-from Blockchains.Binance_Smart_Chain.utils import getContractAbiBSC, getProxyAbiBSC
-from model.LpInfo import LpInfo
-from model.Token import Token
-
+from Blockchains.Fantom.utils import *
+from Blockchains.Binance_Smart_Chain.utils import *
+from model import Token, LpInfo
 
 # TODO: REMOVE KEY FROM HERE
 MORALIS_API_KEY = 'SNXINaRtMzipLwPc4pPYUhfmY3CeiPv8K03UbHTqqhzWTUIXnJsbKGUKtXX4jHOT'
@@ -40,8 +38,8 @@ class PriceCalculator:
         # TODO: These function may raise an exception (in a try catch block)
         # TODO: Because contract is in a proxy (e.g. 0xb86AbCb37C3A4B64f74f59301AFF131a1BEcC787)
         # TODO: So functions are not callable
-        token0_decimals = self._getTokenDecimals(token0_address)
-        token1_decimals = self._getTokenDecimals(token1_address)
+        token0_decimals = self.getTokenDecimals(token0_address)
+        token1_decimals = self.getTokenDecimals(token1_address)
        
         # We obtain the price of both tokens in USD
         token0_priceUSD = self.getTokenPrice(token0_address)

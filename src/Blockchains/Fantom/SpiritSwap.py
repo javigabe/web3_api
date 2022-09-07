@@ -1,3 +1,4 @@
+from typing import Dict
 from web3 import Web3
 import os
 
@@ -18,15 +19,42 @@ class SpiritSwap:
         self.contract_instance = web3.eth.contract(address=contract_address, abi=contract_abi)
 
 
+    def getUserLiquidity(self, address: str) -> Dict:
+        poolLength = self._poolLength()
+        reward_token = self._rewardToken()
+
+        user_liquidity = {'user_liquidity': []}
+        for i in range(0, poolLength):
+            user_info = self._userInfo(i, address)
+            if ((user_info[0]) != 0):
+                lp_token = self._lpToken(i)
+                #lpTokens = float(Web3.fromWei(user_info[0], 'ether'))
+                pool = {
+                    'is_lp': 'true',
+                    'amount': user_info[0],
+                    'reward_debt': user_info[1],
+                    'token_address': lp_token,
+                    'reward_token': reward_token
+                }
+                user_liquidity['user_liquidity'].append(pool)
+        
+        return user_liquidity
+
+
     # ------------------  CONTRACT FUNCTIONS  --------------------- #
-    def poolInfo(self, pid: int) -> list:
+    def _poolInfo(self, pid: int) -> list:
         # [lpToken address, allocPoint uint256, lastRewardBlock uint256, accSpiritPerShare uint256, depositFeeBP uint16]
         return self.contract_instance.functions.poolInfo(pid).call()
 
-    def userInfo(self, pid: int, address: str) -> list:
+    def _userInfo(self, pid: int, address: str) -> list:
         #  [amount (lpTokens) uint256, rewardDebt uint256]
         return self.contract_instance.functions.userInfo(pid, address).call()
 
-    def poolLength(self) -> int:
+    def _poolLength(self) -> int:
         # Number of pools under this contract
         return self.contract_instance.functions.poolLength().call()
+
+    def _rewardToken(self) -> str:
+        # Spirit token address
+        # HARD CODED TO SAVE ONE REQUEST
+        return Web3.toChecksumAddress('0x5cc61a78f164885776aa610fb0fe1257df78e59b')
