@@ -2,7 +2,6 @@ from typing import Callable, Dict, List
 from web3 import Web3
 from multiprocessing import Process, Queue
 
-
 from .config import Config as _
 from .Fantom import get_user_info as fantom_info
 from .Binance_Smart_Chain import get_user_info as binance_info
