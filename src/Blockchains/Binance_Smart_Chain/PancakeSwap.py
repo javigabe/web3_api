@@ -10,9 +10,8 @@ farm_v1 = '0x73feaa1eE314F8c655E354234017bE2193C9E24E'
 farm_v2 = '0xa5f8C5Dbd5F286960b9d90548680aE5ebFf07652'
 
 class PancakeSwapV1:
-                #  -------------      POOLS START AT PID 251      ------------ #
-    def __init__(self, provider):
-        web3 = Web3(Web3.HTTPProvider(provider))
+    #  -------------      POOLS START AT PID 251      ------------ #
+    def __init__(self, web3: Web3):
         # Check if connected correctly
         if (not web3.isConnected()):
             raise ConnectionError('Error connecting to binance smart chain rpc')
@@ -31,13 +30,13 @@ class PancakeSwapV1:
 
 
         for i in range(0, length):
-            user_info = self._userInfo(i, address)
-            if ((user_info[0]) != 0):
+            amount, reward_debt = self._userInfo(i, address)
+            if (amount != 0):
                 lp_token = self._poolInfo(i)[0]
                 pool = {
-                    'is_lp': 'true',
-                    'amount': user_info[0],
-                    'reward_debt': user_info[1],
+                    'is_lp': 'True',
+                    'amount': amount,
+                    'reward_debt': reward_debt,
                     'token_address': lp_token,
                     'reward_token': reward_token
                 }
@@ -70,8 +69,7 @@ class PancakeSwapV1:
 
 
 class PancakeSwapV2:
-    def __init__(self, provider):
-        web3 = Web3(Web3.HTTPProvider(provider))
+    def __init__(self, web3: Web3):
         # Check if connected correctly
         if (not web3.isConnected()):
             raise ConnectionError('Error connecting to binance smart chain rpc')
@@ -90,13 +88,13 @@ class PancakeSwapV2:
         length = self._poolLength()
 
         for i in range(0, length):
-            user_info = self._userInfo(i, address)
-            if ((user_info[0]) != 0):
+            amount, reward_debt, *_ = self._userInfo(i, address)
+            if (amount != 0):
                 lp_token = self._lpToken(i)
                 pool = {
-                    'is_lp': 'true',
-                    'amount': user_info[0],
-                    'reward_debt': user_info[1],
+                    'is_lp': 'True',
+                    'amount': amount,
+                    'reward_debt': reward_debt,
                     'token_address': lp_token,
                     'reward_token': reward_token
                 }
@@ -106,7 +104,7 @@ class PancakeSwapV2:
 
     # ------------------  CONTRACT FUNCTIONS  --------------------- #
     def _userInfo(self, pid: int, address: str) -> list:
-        #  [amount (lpTokens) uint256, rewardDebt uint256]
+        #  [amount (lpTokens) uint256, rewardDebt uint256, boostMultiplier uint256]
         return self.contract_instance.functions.userInfo(pid, address).call()
 
     def _poolLength(self) -> int:

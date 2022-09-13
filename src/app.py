@@ -1,8 +1,14 @@
 from flask import Flask
-import Blockchains
+from Blockchains import get_all_liquidity_by_user
 
 app = Flask(__name__)
 
+@app.before_first_request
+def before_first_request():
+    #run_config()
+    pass
+
+
 @app.route("/userInfo/<address>")
-def hello_world(address):
-    return "<p>Hello, World!</p>"
+def get_liquidity_by_user(address):
+    return get_all_liquidity_by_user(address)

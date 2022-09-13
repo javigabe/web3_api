@@ -5,8 +5,7 @@ import os
 contract_address = '0x9083EA3756BDE6Ee6f27a6e996806FBD37F6F093'
 
 class SpiritSwap:
-    def __init__(self, provider):
-        web3 = Web3(Web3.HTTPProvider(provider))
+    def __init__(self, web3: Web3):
         # Check if connected correctly
         if (not web3.isConnected()):
             raise ConnectionError('Error connecting to fantom rpc')
@@ -25,14 +24,14 @@ class SpiritSwap:
 
         user_liquidity = {'user_liquidity': []}
         for i in range(0, poolLength):
-            user_info = self._userInfo(i, address)
-            if ((user_info[0]) != 0):
-                lp_token = self._lpToken(i)
-                #lpTokens = float(Web3.fromWei(user_info[0], 'ether'))
+            amount, reward_debt = self._userInfo(i, address)
+            if (amount != 0):
+                lp_token = self._poolInfo(i)[0]
+                #lpTokens = float(Web3.fromWei(amount, 'ether'))
                 pool = {
-                    'is_lp': 'true',
-                    'amount': user_info[0],
-                    'reward_debt': user_info[1],
+                    'is_lp': 'True',
+                    'amount': amount,
+                    'reward_debt': reward_debt,
                     'token_address': lp_token,
                     'reward_token': reward_token
                 }

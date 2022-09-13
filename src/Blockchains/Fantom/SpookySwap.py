@@ -6,8 +6,7 @@ farm_v2 = '0x18b4f774fdC7BF685daeeF66c2990b1dDd9ea6aD'
 farm_v3 = '0x9C9C920E51778c4ABF727b8Bb223e78132F00aA4'
 
 class SpookySwapV2:
-    def __init__(self, provider):
-        web3 = Web3(Web3.WebsocketProvider(provider))
+    def __init__(self, web3: Web3):
         # Check if connected correctly
         if (not web3.isConnected()):
             raise ConnectionError('Error connecting to fantom rpc')
@@ -25,14 +24,14 @@ class SpookySwapV2:
 
         user_liquidity = {'user_liquidity': []}
         for i in range(0, poolLength):
-            user_info = self._userInfo(i, address)
-            if ((user_info[0]) != 0):
+            amount, reward_debt = self._userInfo(i, address)
+            if (amount != 0):
                 lp_token = self._lpToken(i)
                 #lpTokens = float(Web3.fromWei(user_info[0], 'ether'))
                 pool = {
-                    'is_lp': 'true',
-                    'amount': user_info[0],
-                    'reward_debt': user_info[1],
+                    'is_lp': 'True',
+                    'amount': amount,
+                    'reward_debt': reward_debt,
                     'token_address': lp_token,
                     'reward_token': reward_token
                 }
@@ -65,8 +64,7 @@ class SpookySwapV2:
 
 
 class SpookySwapV3:
-    def __init__(self, provider):
-        web3 = Web3(Web3.WebsocketProvider(provider))
+    def __init__(self, web3: Web3):
         # Check if connected correctly
         if (not web3.isConnected()):
             raise ConnectionError('Error connecting to fantom rpc')
@@ -84,14 +82,14 @@ class SpookySwapV3:
         
         user_liquidity = {'user_liquidity': []}
         for i in range(0, poolLength):
-            user_info = self._userInfo(i, address)
-            if ((user_info[0]) != 0):
+            amount, reward_debt = self._userInfo(i, address)
+            if (amount != 0):
                 lpToken = self._lpToken(i)
                 #lpTokens = float(Web3.fromWei(user_info[0], 'ether'))
                 pool = {
-                    'is_lp': 'true',
-                    'amount': user_info[0],
-                    'reward_debt': user_info[1],
+                    'is_lp': 'True',
+                    'amount': amount,
+                    'reward_debt': reward_debt,
                     'token_address': lpToken,
                     'reward_token': reward_token
 

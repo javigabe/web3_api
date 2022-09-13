@@ -7,8 +7,7 @@ address = '0xFC00FACE00000000000000000000000000000000'
 
 class FantomWallet:
 
-    def __init__(self, provider):
-        web3 = Web3(Web3.WebsocketProvider(provider))
+    def __init__(self, web3: Web3):
         # Check if connected correctly
         if (not web3.isConnected()):
             raise ConnectionError('Error connecting to fantom rpc')
@@ -21,7 +20,7 @@ class FantomWallet:
         self.contract_instance = web3.eth.contract(address=address, abi=contract_abi)
     
     
-    def getUserLiquidity(self, address: str) -> Dict or None:
+    def getUserLiquidity(self, address: str) -> Dict:
         pool_length = self._poolLength()
         tokens = 0
         reward_debt = 0
@@ -32,12 +31,13 @@ class FantomWallet:
                 reward_debt += self._pendingRewards(address, i)
         
         return {
-            'user_liquidity': [ 
+            'user_liquidity': [
                 {
-                    'is_lp': 'false', 
+                    'is_lp': 'False', 
                     'amount': tokens,
                     'token_address': self._getTokenAddress(),
-                    'reward_debt': reward_debt
+                    'reward_debt': reward_debt,
+                    'reward_token': self._getTokenAddress()
                 }
             ]
         }
