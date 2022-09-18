@@ -29,7 +29,7 @@ class SpookySwapV2:
                 lp_token = self._lpToken(i)
                 #lpTokens = float(Web3.fromWei(user_info[0], 'ether'))
                 pool = {
-                    'is_lp': 'True',
+                    'is_lp': 1,
                     'amount': amount,
                     'reward_debt': reward_debt,
                     'token_address': lp_token,
@@ -87,7 +87,7 @@ class SpookySwapV3:
                 lpToken = self._lpToken(i)
                 #lpTokens = float(Web3.fromWei(user_info[0], 'ether'))
                 pool = {
-                    'is_lp': 'True',
+                    'is_lp': 1,
                     'amount': amount,
                     'reward_debt': reward_debt,
                     'token_address': lpToken,

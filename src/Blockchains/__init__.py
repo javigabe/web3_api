@@ -14,8 +14,9 @@ from model.Token import Token
 
 
 def get_all_liquidity_by_user(address: str) -> Dict:
+    print(address)
     queue = Queue()
-    available_blockchains = [fantom_info, binance_info]
+    available_blockchains = [fantom_info]
     processes = _run_blockchains(address, available_blockchains, queue)
 
     user_blockchains_info = {}
@@ -44,7 +45,7 @@ def _get_balances(chain_user_info: Dict, chain: str) -> Dict:
         platform_user_info = chain_user_info[platform]['user_liquidity']
         
         for index, token in enumerate(platform_user_info):
-            if token['is_lp'] == 'True':
+            if token['is_lp']:
                 lp_tokens = float(Web3.fromWei(token['amount'], 'ether'))
                 reward_debt = price_calculator.getTokenAmount(token['token_address'], token['reward_debt'])
                 lp_info: LpInfo = price_calculator.getLpInfo(token['token_address'])
@@ -67,6 +68,12 @@ def _get_balances(chain_user_info: Dict, chain: str) -> Dict:
                 chain_user_info[platform]['user_liquidity'][index]['reward_debt'] = reward_debt
 
                 chain_user_info[platform]['user_liquidity'][index]['dollar_value'] = token_info.getPrice() * token_amount
-                chain_user_info[platform]['user_liquidity'][index]['symbol'] = token_info.getName()
+
+                chain_user_info[platform]['user_liquidity'][index]['token0'] = {
+                    'amount': token_amount,
+                    'price': token_info.getPrice(),
+                    'symbol': token_info.getName(),
+                    'address': token_info.getTokenAddress()
+                }
 
     return chain_user_info

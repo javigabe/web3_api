@@ -33,7 +33,7 @@ class FantomWallet:
         return {
             'user_liquidity': [
                 {
-                    'is_lp': 'False', 
+                    'is_lp': 0, 
                     'amount': tokens,
                     'token_address': self._getTokenAddress(),
                     'reward_debt': reward_debt,

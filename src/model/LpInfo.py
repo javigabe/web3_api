@@ -2,7 +2,7 @@ from typing import Dict
 from .Token import Token
 
 class LpInfo:
-    def __init__(self, address: str, token0: Token, token1: Token, percentage_token0 = None, percentage_token1 = None, price: int = None):
+    def __init__(self, address: str, token0: Token, token1: Token, percentage_token0: float = None, percentage_token1: float = None, price: int = None):
         self.address = address
         self.token0 = token0
         self.token1 = token1

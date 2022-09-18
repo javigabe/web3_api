@@ -34,7 +34,7 @@ class PancakeSwapV1:
             if (amount != 0):
                 lp_token = self._poolInfo(i)[0]
                 pool = {
-                    'is_lp': 'True',
+                    'is_lp': 1,
                     'amount': amount,
                     'reward_debt': reward_debt,
                     'token_address': lp_token,
@@ -92,7 +92,7 @@ class PancakeSwapV2:
             if (amount != 0):
                 lp_token = self._lpToken(i)
                 pool = {
-                    'is_lp': 'True',
+                    'is_lp': 1,
                     'amount': amount,
                     'reward_debt': reward_debt,
                     'token_address': lp_token,

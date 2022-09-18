@@ -29,7 +29,7 @@ class SpiritSwap:
                 lp_token = self._poolInfo(i)[0]
                 #lpTokens = float(Web3.fromWei(amount, 'ether'))
                 pool = {
-                    'is_lp': 'True',
+                    'is_lp': 1,
                     'amount': amount,
                     'reward_debt': reward_debt,
                     'token_address': lp_token,
