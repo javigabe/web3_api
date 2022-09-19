@@ -2,8 +2,8 @@ import requests
 from web3 import Web3
 import os
 
-# TODO: REMOVE API KEY FROM HERE
-BSC_SCAN_API_KEY = '7JWPENGUX1KEXPIK1RS2ZHHE8N7ZBE2BJY'
+from ...keys import BSC_SCAN_API_KEY
+
 
 def getContractAbiBSC(address: str) -> str or None:
     script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in

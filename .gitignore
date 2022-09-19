@@ -2,3 +2,4 @@ lib/*
 bin/*
 .DS_Store
 pyenv.cfg
+keys.py

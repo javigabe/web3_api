@@ -1,8 +1,7 @@
 import os
 import requests
 
-# TODO: REMOVE API KEY FROM HERE
-POLYGON_SCAN_API_KEY = 'WVCYHYZ9SFJH21157UZ4FAQ67372R2U4HE'
+from ...keys import POLYGON_SCAN_API_KEY
 
 def getContractAbiPolygon(address) -> str or None:
     script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in

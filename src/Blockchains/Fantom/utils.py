@@ -2,8 +2,8 @@ import requests
 from web3 import Web3
 import os.path
 
-# TODO: REMOVE KEY FROM HERE
-FTM_SCAN_API_KEY = 'DU3Y6RFASYWET4E1XSK1UQJNSRMM3VIW8A'
+from ...keys import FTM_SCAN_API_KEY
+
 
 def getContractAbiFTM(address: str) -> str or None:
     script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in

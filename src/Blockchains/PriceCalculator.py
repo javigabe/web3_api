@@ -7,9 +7,8 @@ from .Binance_Smart_Chain.utils import *
 from model.Token import Token
 from model.LpInfo import LpInfo
 from .Chains import Chains
+from ..keys import MORALIS_API_KEY
 
-# TODO: REMOVE KEY FROM HERE
-MORALIS_API_KEY = 'SNXINaRtMzipLwPc4pPYUhfmY3CeiPv8K03UbHTqqhzWTUIXnJsbKGUKtXX4jHOT'
 
 class PriceCalculator:
 
