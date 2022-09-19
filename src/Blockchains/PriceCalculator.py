@@ -7,7 +7,7 @@ from .Binance_Smart_Chain.utils import *
 from model.Token import Token
 from model.LpInfo import LpInfo
 from .Chains import Chains
-from ..keys import MORALIS_API_KEY
+from keys import MORALIS_API_KEY
 
 
 class PriceCalculator:
@@ -34,26 +34,22 @@ class PriceCalculator:
         # We obtain the total supply of the lp token
         total_supply = Web3.fromWei(contract.functions.totalSupply().call(), 'ether')
 
-        # Transform token contract addresses to checksum
-        token0_address= Web3.toChecksumAddress(token_0)
-        token1_address = Web3.toChecksumAddress(token_1)
-
-        # We obtain the price of both tokens in USD
-        token0_priceUSD = self._getTokenPrice(token0_address)
-        token1_priceUSD = self._getTokenPrice(token1_address)
+        # We obtain the info of both tokens that form the LP
+        token0_info = self.getTokenInfo(token_0)
+        token1_info = self.getTokenInfo(token_1)
 
         # Supply of both tokens in the contract  
-        total_supply_token_0 = self.getTokenAmount(token0_address, reserves_token0)
-        total_supply_token_1 = self.getTokenAmount(token1_address, reserves_token1)
+        total_supply_token_0 = self.getTokenAmount(token0_info.getTokenAddress(), reserves_token0)
+        total_supply_token_1 = self.getTokenAmount(token1_info.getTokenAddress(), reserves_token1)
 
-        lp_price = (token0_priceUSD * total_supply_token_0 + token1_priceUSD * total_supply_token_1)/float(total_supply)
+        lp_price = (token0_info.getPrice() * total_supply_token_0 + token1_info.getPrice() * total_supply_token_1)/float(total_supply)
 
-        percentage_token0 = (token0_priceUSD * total_supply_token_0) / (float(total_supply) * lp_price)
-        percentage_token1 = (token1_priceUSD * total_supply_token_1) / (float(total_supply) * lp_price)
+        percentage_token0 = (token0_info.getPrice() * total_supply_token_0) / (float(total_supply) * lp_price)
+        percentage_token1 = (token1_info.getPrice() * total_supply_token_1) / (float(total_supply) * lp_price)
 
         
         # TODO: Same thing happens with _getTokenSymbol than with getTokenAmount
-        lp_info = LpInfo(lp_address, Token(token0_address, self._getTokenSymbol(token0_address), token0_priceUSD), Token(token1_address, self._getTokenSymbol(token1_address), token1_priceUSD))
+        lp_info = LpInfo(lp_address, token0_info, token1_info)
         lp_info.setPrice(lp_price)
         lp_info.setPercentageToken0(percentage_token0)
         lp_info.setPercetangeToken1(percentage_token1)

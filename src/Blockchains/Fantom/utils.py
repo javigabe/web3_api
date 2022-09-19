@@ -2,7 +2,7 @@ import requests
 from web3 import Web3
 import os.path
 
-from ...keys import FTM_SCAN_API_KEY
+from keys import FTM_SCAN_API_KEY
 
 
 def getContractAbiFTM(address: str) -> str or None:

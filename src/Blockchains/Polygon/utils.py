@@ -1,7 +1,7 @@
 import os
 import requests
 
-from ...keys import POLYGON_SCAN_API_KEY
+from keys import POLYGON_SCAN_API_KEY
 
 def getContractAbiPolygon(address) -> str or None:
     script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in

@@ -2,7 +2,7 @@ import requests
 from web3 import Web3
 import os
 
-from ...keys import BSC_SCAN_API_KEY
+from keys import BSC_SCAN_API_KEY
 
 
 def getContractAbiBSC(address: str) -> str or None:
